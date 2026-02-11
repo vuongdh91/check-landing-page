@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Quy hoạch Phân khu P1 - TP. Tây Ninh (V2.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f3f4f6; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Animation */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .active-tab {
+            border-bottom: 2px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .inactive-tab {
+            color: #64748b;
+            border-bottom: 2px solid transparent;
+        }
+        .inactive-tab:hover { color: #334155; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800 h-screen flex overflow-hidden">
+
+    <!-- Sidebar Compact -->
+    <aside class="w-20 bg-brand-900 flex flex-col items-center py-6 text-white shrink-0 z-50">
+        <div class="mb-8 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center font-bold text-lg">
+            TN
+        </div>
+        <nav class="flex-1 space-y-6 w-full flex flex-col items-center">
+            <button onclick="switchTab('dashboard')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="dashboard">
+                <i class="fas fa-th-large text-lg"></i>
+                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Tổng quan</span>
+            </button>
+            <button onclick="switchTab('technical')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="technical">
+                <i class="fas fa-ruler-combined text-lg"></i>
+                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Chỉ tiêu Kỹ thuật</span>
+            </button>
+            <button onclick="switchTab('legal')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="legal">
+                <i class="fas fa-book-open text-lg"></i>
+                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Pháp lý</span>
+            </button>
+        </nav>
+        <div class="mt-auto">
+            <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold border-2 border-brand-900">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        <!-- Top Header -->
+        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center shrink-0 z-40">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded border border-green-200 uppercase">Đã phê duyệt</span>
+                    <h1 class="text-lg font-bold text-slate-900">Nhiệm vụ Quy hoạch Phân khu Phường 1</h1>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">Quyết định số: <strong>444/QĐ-UBND</strong> • Ngày ký: <strong>28/02/2025</strong></p>
+            </div>
+            <div class="flex gap-3">
+                <div class="text-right hidden md:block">
+                    <p class="text-xs font-bold text-slate-700">UBND Tỉnh Tây Ninh</p>
+                    <p class="text-[10px] text-slate-400">Người ký: PCT. Dương Văn Thắng</p>
+                </div>
+                <button class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center gap-2">
+                    <i class="fas fa-download"></i> Tải Quyết định
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Container (Scrollable) -->
+        <div class="flex-1 overflow-y-auto bg-slate-50 p-6 relative">
+            
+            <!-- VIEW 1: DASHBOARD TỔNG QUAN -->
+            <div id="view-dashboard" class="space-y-6 fade-in">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Area Card -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-brand-400 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng Diện Tích</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">714,23 <span class="text-sm font-normal text-slate-500">ha</span></h3>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-map"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
+                             <i class="fas fa-info-circle"></i> Phạm vi lập quy hoạch
+                        </div>
+                    </div>
+
+                    <!-- Population Card -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-emerald-400 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dân số dự kiến</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">28.000 <span class="text-sm font-normal text-slate-500">người</span></h3>
+                            </div>
+                            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
+                             <i class="fas fa-chart-line"></i> Phân khu đô thị mới
+                        </div>
+                    </div>
+
+                    <!-- Density Card -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-amber-400 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đất Cây xanh</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">≥ 2,0 <span class="text-sm font-normal text-slate-500">m²/người</span></h3>
+                            </div>
+                            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
+                             <i class="fas fa-check-circle text-green-500"></i> Đạt chuẩn đô thị Xanh
+                        </div>
+                    </div>
+
+                    <!-- Infrastructure Card -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-purple-400 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hạ tầng KT</p>
+                                <h3 class="text-xl font-bold text-slate-800 mt-2">Ngầm hóa</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
+                             <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-bold">100%</span> Tiêu chuẩn đô thị TM
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boundaries & Map Visualization -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Compass Map Visualization -->
+                    <div class="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
+                        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
+                            <i class="far fa-compass text-brand-600"></i> Ranh giới quy hoạch
+                        </h3>
+                        
+                        <!-- Radar UI -->
+                        <div class="relative w-64 h-64 mx-auto my-4">
+                            <!-- Circles -->
+                            <div class="absolute inset-0 border-2 border-slate-100 rounded-full"></div>
+                            <div class="absolute inset-8 border border-slate-100 rounded-full"></div>
+                            <div class="absolute inset-16 border border-brand-50 bg-brand-50/30 rounded-full flex items-center justify-center">
+                                <div class="text-center">
+                                    <p class="text-xs font-bold text-brand-600 uppercase">Phường 1</p>
+                                    <p class="text-[10px] text-slate-400">Trung tâm</p>
+                                </div>
+                            </div>
+
+                            <!-- North -->
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-40 z-10">
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Bắc</span>
+                                <span class="text-xs font-bold text-slate-800">Đường Đồng Cỏ Đỏ</span>
+                            </div>
+                            
+                            <!-- South -->
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-3 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-48 z-10">
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Nam</span>
+                                <span class="text-xs font-bold text-slate-800 truncate">Đường Tua Hai & CMT8</span>
+                            </div>
+
+                            <!-- West -->
+                            <div class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-32 z-10">
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Tây</span>
+                                <span class="text-xs font-bold text-slate-800">Đ. Trần Văn Trà</span>
+                            </div>
+
+                            <!-- East -->
+                            <div class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-40 z-10">
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Đông</span>
+                                <span class="text-xs font-bold text-slate-800">Đ. Trần Phú & 30/4</span>
+                            </div>
+
+                            <!-- Connecting Lines -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-full h-[1px] bg-slate-100"></div>
+                                <div class="h-full w-[1px] bg-slate-100 absolute"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Goals -->
+                    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                        <h3 class="font-bold text-slate-800 mb-4">Tính chất & Dự án trọng điểm</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Feature 1 -->
+                            <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-brand-500">
+                                <h4 class="font-bold text-slate-700 text-sm mb-2">Đồng bộ Hạ tầng & Cảnh quan</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                    Quy hoạch khu đô thị mới với hạ tầng kỹ thuật ngầm hóa, đạt tiêu chuẩn đô thị xanh, thông minh. Giảm áp lực cho khu trung tâm hiện hữu, kết nối đồng bộ không gian với trung tâm hành chính thành phố.
+                                </p>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-emerald-500">
+                                <h4 class="font-bold text-slate-700 text-sm mb-2">Các dự án thành phần</h4>
+                                <ul class="text-xs text-slate-600 space-y-2">
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu phía Đông rạch Tây Ninh
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu phía Tây rạch Tây Ninh
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu dân cư Bình Minh (chỉnh trang)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline/Process -->
+                        <div class="mt-6 pt-6 border-t border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">Quy trình thực hiện</h4>
+                            <div class="flex items-center justify-between text-xs w-full max-w-2xl">
+                                <div class="text-center opacity-50">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1"><i class="fas fa-check"></i></div>
+                                    <span>Quy hoạch chung</span>
+                                </div>
+                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+                                <div class="text-center">
+                                    <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center mx-auto mb-1 shadow-lg shadow-brand-200"><i class="fas fa-pen"></i></div>
+                                    <span class="font-bold text-brand-700">Nhiệm vụ Phân khu</span>
+                                </div>
+                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+                                <div class="text-center opacity-50">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1">3</div>
+                                    <span>Đồ án 1/2000</span>
+                                </div>
+                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+                                <div class="text-center opacity-50">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1">4</div>
+                                    <span>Dự án đầu tư</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: CHỈ TIÊU KỸ THUẬT (TABBED INTERFACE) -->
+            <div id="view-technical" class="hidden fade-in space-y-6">
+                
+                <!-- Tab Controls -->
+                <div class="flex border-b border-slate-200 bg-white sticky top-0 z-10 px-4 pt-2 gap-6">
+                    <button class="pb-3 text-sm font-medium active-tab transition-colors" onclick="switchSubTab('datdai', this)">Sử dụng Đất & Nhà ở</button>
+                    <button class="pb-3 text-sm font-medium inactive-tab transition-colors" onclick="switchSubTab('giaoduc', this)">Giáo dục & Y tế</button>
+                    <button class="pb-3 text-sm font-medium inactive-tab transition-colors" onclick="switchSubTab('hatang', this)">Hạ tầng Kỹ thuật</button>
+                </div>
+
+                <!-- SUB-VIEW: Đất đai -->
+                <div id="sub-datdai" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Housing Metric -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800">Chỉ tiêu Nhóm nhà ở</h3>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">Đơn vị: m²/người</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-500">Mức tối thiểu quy định</span>
+                                    <span class="font-bold">15 m²</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-slate-400 h-2 rounded-full" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-brand-600 font-bold">Mức đề xuất tại đồ án</span>
+                                    <span class="font-bold text-brand-600">≥ 15 m²</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-brand-600 h-2 rounded-full shadow-sm" style="width: 55%"></div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-100">
+                                <div class="text-center p-2 bg-slate-50 rounded">
+                                    <p class="text-[10px] text-slate-400 uppercase">Tầng cao tối đa</p>
+                                    <p class="text-lg font-bold text-slate-800">7 <span class="text-xs font-normal">tầng</span></p>
+                                </div>
+                                <div class="text-center p-2 bg-slate-50 rounded">
+                                    <p class="text-[10px] text-slate-400 uppercase">Mật độ xây dựng</p>
+                                    <p class="text-lg font-bold text-slate-800">≤ 60%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Green Space Metric -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800">Chỉ tiêu Cây xanh (Công cộng)</h3>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">Đơn vị: m²/người</span>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div class="relative w-32 h-32 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100" />
+                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="351" stroke-dashoffset="100" class="text-emerald-500" />
+                                </svg>
+                                <div class="absolute text-center">
+                                    <span class="text-2xl font-bold text-slate-800">2.0</span>
+                                    <span class="block text-[10px] text-slate-400">m²/người</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 space-y-3">
+                                <div class="flex items-center justify-between p-2 bg-emerald-50 rounded border border-emerald-100">
+                                    <span class="text-xs font-medium text-emerald-800">Cây xanh đơn vị ở</span>
+                                    <span class="text-sm font-bold text-emerald-700">≥ 2.0</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-white rounded border border-slate-100">
+                                    <span class="text-xs font-medium text-slate-600">CX Sử dụng CC đô thị</span>
+                                    <span class="text-sm font-bold text-slate-800">≥ 2.0</span>
+                                </div>
+                                <p class="text-[10px] text-slate-400 italic">* Tối thiểu (Loại II)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW: Giáo dục & Y tế -->
+                <div id="sub-giaoduc" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                     <table class="w-full text-left bg-white rounded-xl shadow-sm border-separate border-spacing-0 overflow-hidden border border-slate-200">
+                        <thead class="bg-slate-50 text-xs text-slate-500 uppercase font-semibold">
+                            <tr>
+                                <th class="px-6 py-3 border-b border-slate-200">Cấp học</th>
+                                <th class="px-6 py-3 border-b border-slate-200">Chỉ tiêu đất (m²/người)</th>
+                                <th class="px-6 py-3 border-b border-slate-200">Tầng cao</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-slate-100">
+                            <tr class="hover:bg-blue-50/50">
+                                <td class="px-6 py-4 font-medium"><i class="fas fa-shapes text-pink-400 mr-2"></i>Mầm non</td>
+                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,6</td>
+                                <td class="px-6 py-4">≤ 3</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50/50">
+                                <td class="px-6 py-4 font-medium"><i class="fas fa-book text-blue-400 mr-2"></i>Tiểu học</td>
+                                <td class="px-6 py-4 font-bold text-slate-800">0,65</td>
+                                <td class="px-6 py-4">≤ 5</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50/50">
+                                <td class="px-6 py-4 font-medium"><i class="fas fa-flask text-purple-400 mr-2"></i>THCS</td>
+                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,55</td>
+                                <td class="px-6 py-4">≤ 5</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50/50">
+                                <td class="px-6 py-4 font-medium"><i class="fas fa-graduation-cap text-slate-600 mr-2"></i>THPT</td>
+                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,4</td>
+                                <td class="px-6 py-4">≤ 5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">Y Tế & Thương Mại</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i class="fas fa-hospital text-red-500"></i>
+                                    <span class="font-bold text-red-900 text-sm">Trạm Y tế</span>
+                                </div>
+                                <p class="text-2xl font-bold text-slate-800">≥ 500 <span class="text-xs font-normal text-slate-500">m²/trạm</span></p>
+                                <p class="text-[10px] text-slate-400 mt-1">Tầng cao: ≤ 3</p>
+                            </div>
+                            <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i class="fas fa-store text-amber-500"></i>
+                                    <span class="font-bold text-amber-900 text-sm">Chợ / TM</span>
+                                </div>
+                                <p class="text-2xl font-bold text-slate-800">> 2000 <span class="text-xs font-normal text-slate-500">m²/công trình</span></p>
+                                <p class="text-[10px] text-slate-400 mt-1">Tầng cao: ≤ 5</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW: Hạ tầng -->
+                <div id="sub-hatang" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-10 h-10 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-faucet"></i></div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase">Cấp nước</h5>
+                        <p class="text-lg font-bold text-slate-800">130 <span class="text-xs">lít/người/ngày</span></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-10 h-10 mx-auto bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-bolt"></i></div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase">Cấp điện</h5>
+                        <p class="text-lg font-bold text-slate-800">500 <span class="text-xs">W/người</span></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-10 h-10 mx-auto bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-trash"></i></div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase">Rác thải</h5>
+                        <p class="text-lg font-bold text-slate-800">1,3 <span class="text-xs">kg/người/ngày</span></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-10 h-10 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-road"></i></div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase">Đất giao thông</h5>
+                        <p class="text-lg font-bold text-slate-800">≥ 18 <span class="text-xs">% đất QH</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: PHÁP LÝ (Document List) -->
+            <div id="view-legal" class="hidden fade-in max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-lg">Căn cứ pháp lý & Tổ chức thực hiện</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+                        <!-- List Docs -->
+                        <div class="p-6">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Văn bản căn cứ</h4>
+                            <ul class="space-y-4">
+                                <li class="flex gap-3">
+                                    <i class="fas fa-file-pdf text-red-500 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-800">Quyết định 1736/QĐ-TTg</p>
+                                        <p class="text-xs text-slate-500">Quy hoạch tỉnh Tây Ninh 2021-2030 (Thủ tướng CP)</p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3">
+                                    <i class="fas fa-file-pdf text-red-500 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-800">Quyết định 1797/QĐ-UBND</p>
+                                        <p class="text-xs text-slate-500">Điều chỉnh QH chung TP. Tây Ninh (26/09/2024)</p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3">
+                                    <i class="fas fa-file-alt text-slate-400 mt-1"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-800">Nghị định 37/2010/NĐ-CP & 72/2019/NĐ-CP</p>
+                                        <p class="text-xs text-slate-500">Quy định về lập, thẩm định quy hoạch đô thị</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Responsibilities -->
+                        <div class="p-6 bg-slate-50">
+                             <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Tổ chức thực hiện</h4>
+                             <div class="space-y-4">
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <p class="text-xs text-brand-600 font-bold mb-1">Cơ quan phê duyệt</p>
+                                    <p class="font-bold text-slate-800">UBND Tỉnh Tây Ninh</p>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <p class="text-xs text-brand-600 font-bold mb-1">Chủ đầu tư lập đồ án</p>
+                                    <p class="font-bold text-slate-800">Sở Xây Dựng</p>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <p class="text-xs text-brand-600 font-bold mb-1">Cơ quan phối hợp</p>
+                                    <p class="text-sm text-slate-800">UBND TP. Tây Ninh, Sở KH&ĐT, Tài chính, TN&MT</p>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JS Logic for Tabs -->
+    <script>
+        // Main Tab Switcher
+        function switchTab(tabName) {
+            // Hide all views
+            ['dashboard', 'technical', 'legal'].forEach(t => {
+                document.getElementById('view-' + t).classList.add('hidden');
+                // Remove active state from sidebar buttons
+                const btn = document.querySelector(`button[data-target="${t}"]`);
+                btn.classList.remove('bg-brand-700', 'text-white');
+                btn.classList.add('text-white/70');
+            });
+
+            // Show selected view
+            document.getElementById('view-' + tabName).classList.remove('hidden');
+            
+            // Set active state for button
+            const activeBtn = document.querySelector(`button[data-target="${tabName}"]`);
+            activeBtn.classList.add('bg-brand-700', 'text-white');
+            activeBtn.classList.remove('text-white/70');
+        }
+
+        // Sub Tab Switcher (Technical View)
+        function switchSubTab(subTabName, btnElement) {
+            // Hide all sub-views
+            ['datdai', 'giaoduc', 'hatang'].forEach(t => {
+                document.getElementById('sub-' + t).classList.add('hidden');
+            });
+
+            // Reset all buttons style
+            const buttons = btnElement.parentElement.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('active-tab');
+                b.classList.add('inactive-tab');
+            });
+
+            // Show selected sub-view
+            document.getElementById('sub-' + subTabName).classList.remove('hidden');
+            
+            // Set active style
+            btnElement.classList.remove('inactive-tab');
+            btnElement.classList.add('active-tab');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('dashboard'); // Default view
+        });
+    </script>
+</body>
+</html>
