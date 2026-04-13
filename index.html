@@ -1,548 +1,381 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Quy hoạch Phân khu P1 - TP. Tây Ninh (V2.0)</title>
+    <title>Honda Hoàng Nam - Đại lý ủy nhiệm Tây Ninh</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f3f4f6; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Animation */
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .active-tab {
-            border-bottom: 2px solid #2563eb;
-            color: #2563eb;
-            font-weight: 600;
-        }
-        .inactive-tab {
-            color: #64748b;
-            border-bottom: 2px solid transparent;
-        }
-        .inactive-tab:hover { color: #334155; }
-    </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom scrollbar & base styles */
+        body { font-family: 'Quicksand', sans-serif; }
+    </style>
 </head>
-<body class="text-slate-800 h-screen flex overflow-hidden">
+<body class="bg-slate-50 text-slate-800 min-h-screen">
 
-    <!-- Sidebar Compact -->
-    <aside class="w-20 bg-brand-900 flex flex-col items-center py-6 text-white shrink-0 z-50">
-        <div class="mb-8 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center font-bold text-lg">
-            TN
-        </div>
-        <nav class="flex-1 space-y-6 w-full flex flex-col items-center">
-            <button onclick="switchTab('dashboard')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="dashboard">
-                <i class="fas fa-th-large text-lg"></i>
-                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Tổng quan</span>
-            </button>
-            <button onclick="switchTab('technical')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="technical">
-                <i class="fas fa-ruler-combined text-lg"></i>
-                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Chỉ tiêu Kỹ thuật</span>
-            </button>
-            <button onclick="switchTab('legal')" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors tooltip-btn group relative" data-target="legal">
-                <i class="fas fa-book-open text-lg"></i>
-                <span class="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Pháp lý</span>
-            </button>
-        </nav>
-        <div class="mt-auto">
-            <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold border-2 border-brand-900">
-                <i class="fas fa-check"></i>
+    <!-- Top bar -->
+    <div class="bg-red-700 text-white py-2 text-sm hidden md:block z-50 relative">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex space-x-6">
+                <span class="flex items-center"><i data-lucide="phone" class="w-4 h-4 mr-2"></i> Hotline: 1900 56 56 67</span>
+                <span class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i> Giờ mở cửa: 07:30 - 20:30 (Trụ sở chính)</span>
             </div>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        
-        <!-- Top Header -->
-        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center shrink-0 z-40">
             <div>
-                <div class="flex items-center gap-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded border border-green-200 uppercase">Đã phê duyệt</span>
-                    <h1 class="text-lg font-bold text-slate-900">Nhiệm vụ Quy hoạch Phân khu Phường 1</h1>
-                </div>
-                <p class="text-xs text-slate-500 mt-0.5">Quyết định số: <strong>444/QĐ-UBND</strong> • Ngày ký: <strong>28/02/2025</strong></p>
+                <span>Đại lý Ủy nhiệm chính thức của Honda Việt Nam tại Tây Ninh</span>
             </div>
-            <div class="flex gap-3">
-                <div class="text-right hidden md:block">
-                    <p class="text-xs font-bold text-slate-700">UBND Tỉnh Tây Ninh</p>
-                    <p class="text-[10px] text-slate-400">Người ký: PCT. Dương Văn Thắng</p>
-                </div> 
-            </div>
-        </header>
-
-        <!-- Content Container (Scrollable) -->
-        <div class="flex-1 overflow-y-auto bg-slate-50 p-6 relative">
-            
-            <!-- VIEW 1: DASHBOARD TỔNG QUAN -->
-            <div id="view-dashboard" class="space-y-6 fade-in">
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Area Card -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-brand-400 transition-colors">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng Diện Tích</p>
-                                <h3 class="text-3xl font-bold text-slate-800 mt-1">714,23 <span class="text-sm font-normal text-slate-500">ha</span></h3>
-                            </div>
-                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-map"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                             <i class="fas fa-info-circle"></i> Phạm vi lập quy hoạch
-                        </div>
-                    </div>
-
-                    <!-- Population Card -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-emerald-400 transition-colors">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dân số dự kiến</p>
-                                <h3 class="text-3xl font-bold text-slate-800 mt-1">28.000 <span class="text-sm font-normal text-slate-500">người</span></h3>
-                            </div>
-                            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                             <i class="fas fa-chart-line"></i> Phân khu đô thị mới
-                        </div>
-                    </div>
-
-                    <!-- Density Card -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-amber-400 transition-colors">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đất Cây xanh</p>
-                                <h3 class="text-3xl font-bold text-slate-800 mt-1">≥ 2,0 <span class="text-sm font-normal text-slate-500">m²/người</span></h3>
-                            </div>
-                            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-tree"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                             <i class="fas fa-check-circle text-green-500"></i> Đạt chuẩn đô thị Xanh
-                        </div>
-                    </div>
-
-                    <!-- Infrastructure Card -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-purple-400 transition-colors">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hạ tầng KT</p>
-                                <h3 class="text-xl font-bold text-slate-800 mt-2">Ngầm hóa</h3>
-                            </div>
-                            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-network-wired"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                             <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-bold">100%</span> Tiêu chuẩn đô thị TM
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Boundaries & Map Visualization -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Compass Map Visualization -->
-                    <div class="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
-                        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
-                            <i class="far fa-compass text-brand-600"></i> Ranh giới quy hoạch
-                        </h3>
-                        
-                        <!-- Radar UI -->
-                        <div class="relative w-64 h-64 mx-auto my-4">
-                            <!-- Circles -->
-                            <div class="absolute inset-0 border-2 border-slate-100 rounded-full"></div>
-                            <div class="absolute inset-8 border border-slate-100 rounded-full"></div>
-                            <div class="absolute inset-16 border border-brand-50 bg-brand-50/30 rounded-full flex items-center justify-center">
-                                <div class="text-center">
-                                    <p class="text-xs font-bold text-brand-600 uppercase">Phường 1</p>
-                                    <p class="text-[10px] text-slate-400">Trung tâm</p>
-                                </div>
-                            </div>
-
-                            <!-- North -->
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-40 z-10">
-                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Bắc</span>
-                                <span class="text-xs font-bold text-slate-800">Đường Đồng Cỏ Đỏ</span>
-                            </div>
-                            
-                            <!-- South -->
-                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-3 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-48 z-10">
-                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Nam</span>
-                                <span class="text-xs font-bold text-slate-800 truncate">Đường Tua Hai & CMT8</span>
-                            </div>
-
-                            <!-- West -->
-                            <div class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-32 z-10">
-                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Tây</span>
-                                <span class="text-xs font-bold text-slate-800">Đ. Trần Văn Trà</span>
-                            </div>
-
-                            <!-- East -->
-                            <div class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm text-center w-40 z-10">
-                                <span class="block text-[9px] font-bold text-slate-400 uppercase">Phía Đông</span>
-                                <span class="text-xs font-bold text-slate-800">Đ. Trần Phú & 30/4</span>
-                            </div>
-
-                            <!-- Connecting Lines -->
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div class="w-full h-[1px] bg-slate-100"></div>
-                                <div class="h-full w-[1px] bg-slate-100 absolute"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Project Goals -->
-                    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-                        <h3 class="font-bold text-slate-800 mb-4">Tính chất & Dự án trọng điểm</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Feature 1 -->
-                            <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-brand-500">
-                                <h4 class="font-bold text-slate-700 text-sm mb-2">Đồng bộ Hạ tầng & Cảnh quan</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                                    Quy hoạch khu đô thị mới với hạ tầng kỹ thuật ngầm hóa, đạt tiêu chuẩn đô thị xanh, thông minh. Giảm áp lực cho khu trung tâm hiện hữu, kết nối đồng bộ không gian với trung tâm hành chính thành phố.
-                                </p>
-                            </div>
-                            <!-- Feature 2 -->
-                            <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-emerald-500">
-                                <h4 class="font-bold text-slate-700 text-sm mb-2">Các dự án thành phần</h4>
-                                <ul class="text-xs text-slate-600 space-y-2">
-                                    <li class="flex items-center gap-2">
-                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu phía Đông rạch Tây Ninh
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu phía Tây rạch Tây Ninh
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <i class="fas fa-dot-circle text-[8px] text-emerald-500"></i> Khu dân cư Bình Minh (chỉnh trang)
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Timeline/Process -->
-                        <div class="mt-6 pt-6 border-t border-slate-100">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">Quy trình thực hiện</h4>
-                            <div class="flex items-center justify-between text-xs w-full max-w-2xl">
-                                <div class="text-center opacity-50">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1"><i class="fas fa-check"></i></div>
-                                    <span>Quy hoạch chung</span>
-                                </div>
-                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-                                <div class="text-center">
-                                    <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center mx-auto mb-1 shadow-lg shadow-brand-200"><i class="fas fa-pen"></i></div>
-                                    <span class="font-bold text-brand-700">Nhiệm vụ Phân khu</span>
-                                </div>
-                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-                                <div class="text-center opacity-50">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1">3</div>
-                                    <span>Đồ án 1/2000</span>
-                                </div>
-                                <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
-                                <div class="text-center opacity-50">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-1">4</div>
-                                    <span>Dự án đầu tư</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 2: CHỈ TIÊU KỸ THUẬT (TABBED INTERFACE) -->
-            <div id="view-technical" class="hidden fade-in space-y-6">
-                
-                <!-- Tab Controls -->
-                <div class="flex border-b border-slate-200 bg-white sticky top-0 z-10 px-4 pt-2 gap-6">
-                    <button class="pb-3 text-sm font-medium active-tab transition-colors" onclick="switchSubTab('datdai', this)">Sử dụng Đất & Nhà ở</button>
-                    <button class="pb-3 text-sm font-medium inactive-tab transition-colors" onclick="switchSubTab('giaoduc', this)">Giáo dục & Y tế</button>
-                    <button class="pb-3 text-sm font-medium inactive-tab transition-colors" onclick="switchSubTab('hatang', this)">Hạ tầng Kỹ thuật</button>
-                </div>
-
-                <!-- SUB-VIEW: Đất đai -->
-                <div id="sub-datdai" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Housing Metric -->
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-slate-800">Chỉ tiêu Nhóm nhà ở</h3>
-                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">Đơn vị: m²/người</span>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-slate-500">Mức tối thiểu quy định</span>
-                                    <span class="font-bold">15 m²</span>
-                                </div>
-                                <div class="w-full bg-slate-100 rounded-full h-2">
-                                    <div class="bg-slate-400 h-2 rounded-full" style="width: 50%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-brand-600 font-bold">Mức đề xuất tại đồ án</span>
-                                    <span class="font-bold text-brand-600">≥ 15 m²</span>
-                                </div>
-                                <div class="w-full bg-slate-100 rounded-full h-2">
-                                    <div class="bg-brand-600 h-2 rounded-full shadow-sm" style="width: 55%"></div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-100">
-                                <div class="text-center p-2 bg-slate-50 rounded">
-                                    <p class="text-[10px] text-slate-400 uppercase">Tầng cao tối đa</p>
-                                    <p class="text-lg font-bold text-slate-800">7 <span class="text-xs font-normal">tầng</span></p>
-                                </div>
-                                <div class="text-center p-2 bg-slate-50 rounded">
-                                    <p class="text-[10px] text-slate-400 uppercase">Mật độ xây dựng</p>
-                                    <p class="text-lg font-bold text-slate-800">≤ 60%</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Green Space Metric -->
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-slate-800">Chỉ tiêu Cây xanh (Công cộng)</h3>
-                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">Đơn vị: m²/người</span>
-                        </div>
-                        <div class="flex items-center gap-6">
-                            <div class="relative w-32 h-32 flex items-center justify-center">
-                                <svg class="w-full h-full transform -rotate-90">
-                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100" />
-                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="351" stroke-dashoffset="100" class="text-emerald-500" />
-                                </svg>
-                                <div class="absolute text-center">
-                                    <span class="text-2xl font-bold text-slate-800">2.0</span>
-                                    <span class="block text-[10px] text-slate-400">m²/người</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 space-y-3">
-                                <div class="flex items-center justify-between p-2 bg-emerald-50 rounded border border-emerald-100">
-                                    <span class="text-xs font-medium text-emerald-800">Cây xanh đơn vị ở</span>
-                                    <span class="text-sm font-bold text-emerald-700">≥ 2.0</span>
-                                </div>
-                                <div class="flex items-center justify-between p-2 bg-white rounded border border-slate-100">
-                                    <span class="text-xs font-medium text-slate-600">CX Sử dụng CC đô thị</span>
-                                    <span class="text-sm font-bold text-slate-800">≥ 2.0</span>
-                                </div>
-                                <p class="text-[10px] text-slate-400 italic">* Tối thiểu (Loại II)</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SUB-VIEW: Giáo dục & Y tế -->
-                <div id="sub-giaoduc" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
-                     <table class="w-full text-left bg-white rounded-xl shadow-sm border-separate border-spacing-0 overflow-hidden border border-slate-200">
-                        <thead class="bg-slate-50 text-xs text-slate-500 uppercase font-semibold">
-                            <tr>
-                                <th class="px-6 py-3 border-b border-slate-200">Cấp học</th>
-                                <th class="px-6 py-3 border-b border-slate-200">Chỉ tiêu đất (m²/người)</th>
-                                <th class="px-6 py-3 border-b border-slate-200">Tầng cao</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm divide-y divide-slate-100">
-                            <tr class="hover:bg-blue-50/50">
-                                <td class="px-6 py-4 font-medium"><i class="fas fa-shapes text-pink-400 mr-2"></i>Mầm non</td>
-                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,6</td>
-                                <td class="px-6 py-4">≤ 3</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/50">
-                                <td class="px-6 py-4 font-medium"><i class="fas fa-book text-blue-400 mr-2"></i>Tiểu học</td>
-                                <td class="px-6 py-4 font-bold text-slate-800">0,65</td>
-                                <td class="px-6 py-4">≤ 5</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/50">
-                                <td class="px-6 py-4 font-medium"><i class="fas fa-flask text-purple-400 mr-2"></i>THCS</td>
-                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,55</td>
-                                <td class="px-6 py-4">≤ 5</td>
-                            </tr>
-                            <tr class="hover:bg-blue-50/50">
-                                <td class="px-6 py-4 font-medium"><i class="fas fa-graduation-cap text-slate-600 mr-2"></i>THPT</td>
-                                <td class="px-6 py-4 font-bold text-slate-800">≥ 0,4</td>
-                                <td class="px-6 py-4">≤ 5</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">Y Tế & Thương Mại</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-red-50 rounded-lg border border-red-100">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i class="fas fa-hospital text-red-500"></i>
-                                    <span class="font-bold text-red-900 text-sm">Trạm Y tế</span>
-                                </div>
-                                <p class="text-2xl font-bold text-slate-800">≥ 500 <span class="text-xs font-normal text-slate-500">m²/trạm</span></p>
-                                <p class="text-[10px] text-slate-400 mt-1">Tầng cao: ≤ 3</p>
-                            </div>
-                            <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i class="fas fa-store text-amber-500"></i>
-                                    <span class="font-bold text-amber-900 text-sm">Chợ / TM</span>
-                                </div>
-                                <p class="text-2xl font-bold text-slate-800">> 2000 <span class="text-xs font-normal text-slate-500">m²/công trình</span></p>
-                                <p class="text-[10px] text-slate-400 mt-1">Tầng cao: ≤ 5</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SUB-VIEW: Hạ tầng -->
-                <div id="sub-hatang" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="w-10 h-10 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-faucet"></i></div>
-                        <h5 class="text-xs font-bold text-slate-400 uppercase">Cấp nước</h5>
-                        <p class="text-lg font-bold text-slate-800">130 <span class="text-xs">lít/người/ngày</span></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="w-10 h-10 mx-auto bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-bolt"></i></div>
-                        <h5 class="text-xs font-bold text-slate-400 uppercase">Cấp điện</h5>
-                        <p class="text-lg font-bold text-slate-800">500 <span class="text-xs">W/người</span></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="w-10 h-10 mx-auto bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-trash"></i></div>
-                        <h5 class="text-xs font-bold text-slate-400 uppercase">Rác thải</h5>
-                        <p class="text-lg font-bold text-slate-800">1,3 <span class="text-xs">kg/người/ngày</span></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-                        <div class="w-10 h-10 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2"><i class="fas fa-road"></i></div>
-                        <h5 class="text-xs font-bold text-slate-400 uppercase">Đất giao thông</h5>
-                        <p class="text-lg font-bold text-slate-800">≥ 18 <span class="text-xs">% đất QH</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 3: PHÁP LÝ (Document List) -->
-            <div id="view-legal" class="hidden fade-in max-w-4xl mx-auto">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100">
-                        <h3 class="font-bold text-lg">Căn cứ pháp lý & Tổ chức thực hiện</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-                        <!-- List Docs -->
-                        <div class="p-6">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Văn bản căn cứ</h4>
-                            <ul class="space-y-4">
-                                <li class="flex gap-3">
-                                    <i class="fas fa-file-pdf text-red-500 mt-1"></i>
-                                    <div>
-                                        <p class="text-sm font-semibold text-slate-800">Quyết định 1736/QĐ-TTg</p>
-                                        <p class="text-xs text-slate-500">Quy hoạch tỉnh Tây Ninh 2021-2030 (Thủ tướng CP)</p>
-                                    </div>
-                                </li>
-                                <li class="flex gap-3">
-                                    <i class="fas fa-file-pdf text-red-500 mt-1"></i>
-                                    <div>
-                                        <p class="text-sm font-semibold text-slate-800">Quyết định 1797/QĐ-UBND</p>
-                                        <p class="text-xs text-slate-500">Điều chỉnh QH chung TP. Tây Ninh (26/09/2024)</p>
-                                    </div>
-                                </li>
-                                <li class="flex gap-3">
-                                    <i class="fas fa-file-alt text-slate-400 mt-1"></i>
-                                    <div>
-                                        <p class="text-sm font-semibold text-slate-800">Nghị định 37/2010/NĐ-CP & 72/2019/NĐ-CP</p>
-                                        <p class="text-xs text-slate-500">Quy định về lập, thẩm định quy hoạch đô thị</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Responsibilities -->
-                        <div class="p-6 bg-slate-50">
-                             <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Tổ chức thực hiện</h4>
-                             <div class="space-y-4">
-                                <div class="bg-white p-3 rounded border border-slate-200">
-                                    <p class="text-xs text-brand-600 font-bold mb-1">Cơ quan phê duyệt</p>
-                                    <p class="font-bold text-slate-800">UBND Tỉnh Tây Ninh</p>
-                                </div>
-                                <div class="bg-white p-3 rounded border border-slate-200">
-                                    <p class="text-xs text-brand-600 font-bold mb-1">Chủ đầu tư lập đồ án</p>
-                                    <p class="font-bold text-slate-800">Sở Xây Dựng</p>
-                                </div>
-                                <div class="bg-white p-3 rounded border border-slate-200">
-                                    <p class="text-xs text-brand-600 font-bold mb-1">Cơ quan phối hợp</p>
-                                    <p class="text-sm text-slate-800">UBND TP. Tây Ninh, Sở KH&ĐT, Tài chính, TN&MT</p>
-                                </div>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </main>
+    </div>
 
-    <!-- JS Logic for Tabs -->
-    <script>
-        // Main Tab Switcher
-        function switchTab(tabName) {
-            // Hide all views
-            ['dashboard', 'technical', 'legal'].forEach(t => {
-                document.getElementById('view-' + t).classList.add('hidden');
-                // Remove active state from sidebar buttons
-                const btn = document.querySelector(`button[data-target="${t}"]`);
-                btn.classList.remove('bg-brand-700', 'text-white');
-                btn.classList.add('text-white/70');
-            });
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <!-- Logo -->
+                <a href="#gioi-thieu" class="text-3xl font-black text-red-600 tracking-tighter uppercase scroll-link">
+                    Hoàng Nam<span class="text-slate-800 text-xl font-bold ml-2">Honda</span>
+                </a>
+            </div>
 
-            // Show selected view
-            document.getElementById('view-' + tabName).classList.remove('hidden');
-            
-            // Set active state for button
-            const activeBtn = document.querySelector(`button[data-target="${tabName}"]`);
-            activeBtn.classList.add('bg-brand-700', 'text-white');
-            activeBtn.classList.remove('text-white/70');
-        }
+            <div class="hidden md:flex space-x-8 font-semibold text-slate-700">
+                <a href="#gioi-thieu" class="hover:text-red-600 transition scroll-link">Giới thiệu</a>
+                <a href="#lich-su" class="hover:text-red-600 transition scroll-link">Lịch sử</a>
+                <a href="#nganh-hang" class="hover:text-red-600 transition scroll-link">Ngành hàng</a>
+                <a href="#he-thong" class="hover:text-red-600 transition scroll-link">Hệ thống HEAD</a>
+            </div>
 
-        // Sub Tab Switcher (Technical View)
-        function switchSubTab(subTabName, btnElement) {
-            // Hide all sub-views
-            ['datdai', 'giaoduc', 'hatang'].forEach(t => {
-                document.getElementById('sub-' + t).classList.add('hidden');
-            });
+            <div class="hidden md:block">
+                <a href="#lien-he" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold hover:bg-red-700 transition shadow-lg shadow-red-200 scroll-link">
+                    Liên Hệ Ngay
+                </a>
+            </div>
 
-            // Reset all buttons style
-            const buttons = btnElement.parentElement.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.classList.remove('active-tab');
-                b.classList.add('inactive-tab');
-            });
+            <button id="menu-btn" class="md:hidden text-slate-800">
+                <i data-lucide="menu" id="menu-icon" class="w-7 h-7"></i>
+            </button>
+        </div>
 
-            // Show selected sub-view
-            document.getElementById('sub-' + subTabName).classList.remove('hidden');
-            
-            // Set active style
-            btnElement.classList.remove('inactive-tab');
-            btnElement.classList.add('active-tab');
-        }
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t p-4 flex flex-col space-y-4 font-semibold text-slate-700 shadow-inner">
+            <a href="#gioi-thieu" class="scroll-link">Giới thiệu</a>
+            <a href="#lich-su" class="scroll-link">Lịch sử</a>
+            <a href="#nganh-hang" class="scroll-link">Ngành hàng</a>
+            <a href="#he-thong" class="scroll-link">Hệ thống HEAD</a>
+        </div>
+    </nav>
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            switchTab('dashboard'); // Default view
-        });
-    </script>
-</body>
-</html>
+    <!-- Hero Section -->
+    <section id="gioi-thieu" class="relative bg-slate-900 text-white overflow-hidden scroll-mt-24">
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+           <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[100%] rounded-full bg-red-600 blur-[100px]"></div>
+           <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[100%] rounded-full bg-blue-900 blur-[100px]"></div>
+        </div>
+        
+        <div class="relative container mx-auto px-6 py-16 md:py-24 flex flex-col lg:flex-row items-center">
+            <div class="lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left mb-16 lg:mb-0 z-10">
+                <span class="uppercase tracking-widest text-red-400 font-bold text-sm mb-4">Hệ Thống Xe Máy Uy Tín</span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+                    Đại Lý Honda Ủy Nhiệm <br class="hidden lg:block" /> Hàng Đầu Tại Tây Ninh
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 max-w-xl mb-10 leading-relaxed">
+                    Hơn 20 năm đồng hành cùng người dân Tây Ninh. Hoàng Nam tự hào mang đến các dòng xe Honda chính hãng, phụ tùng chất lượng và dịch vụ bảo dưỡng chuẩn mực nhất.
+                </p>
+                <div class="flex flex-col sm:flex-row w-full sm:w-auto">
+                    <a href="#he-thong" class="bg-red-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-red-700 transition cursor-pointer shadow-lg shadow-red-600/30 flex items-center justify-center scroll-link">
+                        <i data-lucide="map-pin" class="mr-2"></i> Tìm Cửa Hàng Gần Nhất
+                    </a>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 relative z-10 w-full">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl transform lg:translate-x-6 border-4 border-slate-800">
+                    <img 
+                        src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                        alt="Xe máy Honda Hoàng Nam" 
+                        class="w-full h-full object-cover aspect-video lg:aspect-[4/3] hover:scale-105 transition duration-700"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                </div>
+                
+                <div class="absolute -bottom-8 -left-4 lg:-left-12 bg-white text-slate-900 p-5 rounded-2xl shadow-xl flex items-center space-x-4 border border-slate-100 animate-bounce" style="animation-duration: 3s;">
+                    <div class="bg-red-100 p-3 rounded-full text-red-600">
+                        <i data-lucide="shield-check" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-xl">100%</p>
+                        <p class="text-sm text-slate-500 font-semibold">Chính hãng</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lịch sử phát triển -->
+    <section id="lich-su" class="py-24 bg-slate-50 scroll-mt-24 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse pointer-events-none"></div>
+        <div class="absolute -bottom-8 -left-8 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse pointer-events-none" style="animation-delay: 2s;"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <!-- Cột hình ảnh -->
+                <div class="lg:w-5/12 relative w-full group">
+                    <div class="absolute inset-0 bg-red-600 rounded-[2.5rem] transform translate-x-4 translate-y-4 lg:translate-x-6 lg:translate-y-6 opacity-10 group-hover:translate-x-8 group-hover:translate-y-8 transition-all duration-700"></div>
+                    <div class="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white z-10 group-hover:-translate-y-2 transition-transform duration-700">
+                        <img 
+                            src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                            alt="Lịch sử Honda Hoàng Nam" 
+                            class="w-full aspect-[4/5] md:aspect-[3/4] object-cover transform group-hover:scale-110 transition-transform duration-1000"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <!-- Badge 20+ -->
+                    <div class="absolute bottom-8 left-8 lg:-left-8 bg-white p-6 rounded-2xl shadow-xl z-20 flex items-center space-x-5 border border-slate-100 hover:scale-105 transition-transform duration-300">
+                        <div class="bg-gradient-to-br from-red-500 to-red-700 text-white p-4 rounded-xl shadow-lg shadow-red-500/30">
+                            <i data-lucide="award" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-black text-slate-800">20+</p>
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Năm Kinh Nghiệm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột Timeline -->
+                <div class="lg:w-7/12 flex flex-col justify-center">
+                    <div class="mb-10 text-center lg:text-left">
+                        <span class="uppercase tracking-widest text-red-500 font-bold text-sm mb-2 block">Về Chúng Tôi</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-6 relative inline-block">
+                            Hành Trình Gắn Kết & Phát Triển
+                            <span class="absolute -bottom-2 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-20 h-1.5 bg-red-600 rounded-full"></span>
+                        </h2>
+                    </div>
+
+                    <!-- Timeline 4 mốc -->
+                    <div class="space-y-4">
+                        <!-- Mốc 2005 -->
+                        <div class="group bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-red-100 transition-all duration-300">
+                            <div class="flex items-center gap-5">
+                                <div class="bg-slate-50 w-20 h-20 rounded-xl text-slate-500 group-hover:bg-red-50 group-hover:text-red-600 transition-colors duration-300 flex items-center justify-center shrink-0">
+                                    <span class="text-2xl font-black">2005</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-red-600 transition-colors">Thành lập công ty</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">Công ty TNHH TM Hoàng Nam chính thức đi vào hoạt động, đánh dấu bước chân đầu tiên phục vụ thị trường Tây Ninh.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mốc 2016 -->
+                        <div class="group bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-red-100 transition-all duration-300">
+                            <div class="flex items-center gap-5">
+                                <div class="bg-slate-50 w-20 h-20 rounded-xl text-slate-500 group-hover:bg-red-50 group-hover:text-red-600 transition-colors duration-300 flex items-center justify-center shrink-0">
+                                    <span class="text-2xl font-black">2016</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-red-600 transition-colors">Kỷ niệm 10 năm</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">Đánh dấu cột mốc 10 năm HEAD đồng hành cùng quý khách hàng và Honda Việt Nam.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mốc 2021 -->
+                        <div class="group bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-red-100 transition-all duration-300">
+                            <div class="flex items-center gap-5">
+                                <div class="bg-slate-50 w-20 h-20 rounded-xl text-slate-500 group-hover:bg-red-50 group-hover:text-red-600 transition-colors duration-300 flex items-center justify-center shrink-0">
+                                    <span class="text-2xl font-black">2021</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-red-600 transition-colors">Kỷ niệm 15 năm</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">Tròn 15 năm gắn kết, không ngừng cải tiến dịch vụ để mang lại giá trị tốt nhất cho người dùng.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mốc 2026 -->
+                        <div class="group bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-red-100 transition-all duration-300 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-20 h-20 bg-red-50 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div class="flex items-center gap-5 relative z-10">
+                                <div class="bg-red-600 w-20 h-20 rounded-xl text-white shadow-md flex items-center justify-center shrink-0">
+                                    <span class="text-2xl font-black">2026</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-red-600 mb-1">Kỷ niệm 20 năm</h3>
+                                    <p class="text-slate-700 font-medium text-sm leading-relaxed">Cột mốc lịch sử 20 năm HEAD vững vàng đồng hành cùng quý khách hàng và Honda Việt Nam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trích dẫn -->
+                    <div class="mt-8 bg-gradient-to-r from-red-50 to-white border-l-4 border-red-600 py-5 px-6 rounded-r-xl shadow-sm">
+                        <p class="italic text-slate-700 font-semibold text-base flex items-center">
+                            <span class="text-3xl text-red-400 mr-2 leading-none">"</span>
+                            Sự hài lòng của khách hàng là thành công của công ty.
+                            <span class="text-3xl text-red-400 ml-2 leading-none translate-y-2">"</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ngành hàng & Dịch vụ -->
+    <section id="nganh-hang" class="py-20 bg-white scroll-mt-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Danh Mục Sản Phẩm & Dịch Vụ</h2>
+                <p class="text-slate-600">Phân phối đầy đủ các dòng xe máy Honda chính hãng cùng hệ sinh thái dịch vụ chăm sóc xe toàn diện.</p>
+            </div>
+
+            <!-- Grid 5 sản phẩm -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div class="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group">
+                    <div class="transform group-hover:-translate-y-2 transition duration-300">
+                        <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-4">
+                            <i data-lucide="scan-line" class="text-red-600 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Xe Tay Ga</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Thanh lịch, hiện đại và tiện ích. Trải nghiệm êm ái, công nghệ tiên tiến, tiết kiệm nhiên liệu.</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group">
+                    <div class="transform group-hover:-translate-y-2 transition duration-300">
+                        <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-4">
+                            <i data-lucide="settings" class="text-red-600 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Xe Số</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Bền bỉ, thân thiện và linh hoạt. Lựa chọn tối ưu cho nhu cầu di chuyển hàng ngày mạnh mẽ.</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group">
+                    <div class="transform group-hover:-translate-y-2 transition duration-300">
+                        <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-4">
+                            <i data-lucide="flame" class="text-red-600 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Xe Côn Tay</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Đậm chất thể thao, cá tính và uy lực. Phân khúc thỏa mãn đam mê tốc độ và sự bứt phá.</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group lg:col-start-1 lg:col-end-2 lg:translate-x-1/2">
+                    <div class="transform group-hover:-translate-y-2 transition duration-300">
+                        <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-4">
+                            <i data-lucide="rocket" class="text-red-600 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Xe Phân Khối Lớn</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Đẳng cấp BigBike, mang lại trải nghiệm chinh phục mọi cung đường cho các tín đồ đam mê tốc độ thực thụ.</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 group lg:col-start-2 lg:col-end-3 lg:translate-x-1/2">
+                    <div class="transform group-hover:-translate-y-2 transition duration-300">
+                        <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center shadow-sm mb-4">
+                            <i data-lucide="zap" class="text-red-600 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Xe Điện / Máy Điện</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Giải pháp di chuyển xanh, thân thiện với môi trường nhưng vẫn giữ trọn vẹn chất lượng từ Honda.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner My Honda+ -->
+            <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-3xl p-8 md:p-10 shadow-xl text-white flex flex-col md:flex-row items-center justify-between mb-12">
+                <div class="md:w-3/4 mb-6 md:mb-0">
+                    <div class="flex items-center mb-3">
+                        <i data-lucide="star" class="text-yellow-400 fill-yellow-400 mr-2 w-6 h-6"></i>
+                        <span class="font-bold text-yellow-400 tracking-wider uppercase text-sm">Chương Trình Đặc Biệt</span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-3">Khách Hàng Thân Thiết My Honda+</h3>
+                    <p class="text-red-100 text-sm md:text-base leading-relaxed">
+                        Chương trình do Honda Việt Nam và Hệ thống Hoàng Nam phối hợp thực hiện. Cài đặt app My Honda+ để nhận ngay các ưu đãi bảo dưỡng, tích điểm và các chương trình CSKH thường xuyên.
+                    </p>
+                </div>
+                <div class="md:w-1/4 flex justify-center md:justify-end">
+                    <div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm border border-white/30 text-center">
+                        <i data-lucide="smartphone" class="w-12 h-12 mx-auto mb-2 text-white"></i>
+                        <span class="font-bold text-sm block">Tải App Ngay</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dịch vụ phụ trợ -->
+            <div class="bg-slate-50 rounded-3xl p-8 md:p-10 shadow-sm flex flex-col md:flex-row items-center justify-between border border-slate-100">
+                <div class="md:w-2/3 mb-8 md:mb-0">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6">Dịch Vụ & Phụ Tùng Chính Hiệu</h3>
+                    <ul class="grid sm:grid-cols-2 gap-5">
+                        <li class="flex items-center text-slate-700 bg-white p-3 rounded-lg shadow-sm">
+                            <i data-lucide="shield-check" class="text-red-500 mr-3 w-5 h-5"></i> Bảo dưỡng định kỳ 6 lần miễn phí
+                        </li>
+                        <li class="flex items-center text-slate-700 bg-white p-3 rounded-lg shadow-sm">
+                            <i data-lucide="wrench" class="text-red-500 mr-3 w-5 h-5"></i> Sửa chữa chuyên nghiệp
+                        </li>
+                        <li class="flex items-center text-slate-700 bg-white p-3 rounded-lg shadow-sm">
+                            <i data-lucide="tool" class="text-red-500 mr-3 w-5 h-5"></i> Phụ tùng Honda 100% chính hãng
+                        </li>
+                        <li class="flex items-center text-slate-700 bg-white p-3 rounded-lg shadow-sm">
+                            <i data-lucide="award" class="text-red-500 mr-3 w-5 h-5"></i> Hướng dẫn Lái xe an toàn (LXAT)
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/3 flex justify-center md:justify-end">
+                    <div class="text-center">
+                        <p class="text-sm text-slate-500 font-bold uppercase mb-2">Tư vấn trực tuyến</p>
+                        <a href="tel:1900565667" class="inline-flex items-center justify-center bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-xl hover:bg-slate-800 transition shadow-lg">
+                            <i data-lucide="phone" class="mr-2"></i> 1900 56 56 67
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hệ thống HEAD (Với JS Map interaction) -->
+    <section id="he-thong" class="py-20 bg-slate-100 scroll-mt-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Hệ Thống Chi Nhánh Honda Hoàng Nam</h2>
+                <p class="text-slate-600">Với mạng lưới 5 chi nhánh rộng lớn, chúng tôi luôn sẵn sàng phục vụ quý khách tại Tây Ninh.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Cột Danh sách chi nhánh -->
+                <div class="lg:w-2/5 flex flex-col space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar" id="branch-list">
+                    <!-- Sẽ được render/điều khiển bằng Javascript ở dưới -->
+                </div>
+
+                <!-- Cột Bản đồ Google Map -->
+                <div class="lg:w-3/5 bg-slate-200 rounded-3xl overflow-hidden min-h-[400px] lg:min-h-[600px] shadow-lg relative border-4 border-slate-50">
+                    <iframe 
+                        id="map-iframe"
+                        title="Bản đồ hệ thống cửa hàng"
+                        width="100%" 
+                        height="100%" 
+                        style="border: 0; position: absolute; top: 0; left: 0;" 
+                        loading="lazy" 
+                        allowfullscreen 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="lien-he" class="bg-slate-900 text-slate-300 pt-20 pb-10 scroll-mt-24">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-
